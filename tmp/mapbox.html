@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>A Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+      body { margin: 0; padding: 0; }
+      #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      mapboxgl.accessToken = 'pk.eyJ1IjoiYW5kZXJzOTQiLCJhIjoiY2s5OGs5djQwMG5jNzNmbGVzZDB5MDlldCJ9.CEkLRVJ-e4YdT_d6LrlcUA';
+      var map = new mapboxgl.Map({
+	  container: 'map',
+	  style: 'mapbox://styles/mapbox/streets-v11',
+	  center: [-71.083014, 42.356173],
+	  zoom: 12
+      });
+      map.addControl(new mapboxgl.NavigationControl());
+
+      function dropMarker(x, y, name) {
+	  new mapboxgl.Marker()
+	      .setPopup(new mapboxgl.Popup({offset: 25, closeOnClick: false}).setText(name))
+	      .setLngLat([y, x])
+	      .addTo(map);
+      }
+
+      dropMarker(42.364004, -71.084102, 'One Fish');
+      dropMarker(42.355252, -71.05492, 'Two Fish');
+      dropMarker(42.361263, -71.071451, 'Red Fish');
+      dropMarker(42.33462, -71.117113, 'Blue Fish');
+
+      var createGeoJSONCircle = function(center, km) {
+	  points = 64;
+
+	  var coords = {
+              latitude: center[1],
+              longitude: center[0]
+	  };
+
+	  var ret = [];
+	  var distanceX = km/(111.320*Math.cos(coords.latitude*Math.PI/180));
+	  var distanceY = km/110.574;
+
+	  var theta, x, y;
+	  for(var i=0; i<points; i++) {
+              theta = (i/points)*(2*Math.PI);
+              x = distanceX*Math.cos(theta);
+              y = distanceY*Math.sin(theta);
+
+              ret.push([coords.longitude+x, coords.latitude+y]);
+	  }
+	  ret.push(ret[0]);
+
+	  return {
+              "type": "geojson",
+              "data": {
+		  "type": "FeatureCollection",
+		  "features": [{
+                      "type": "Feature",
+                      "geometry": {
+			  "type": "Polygon",
+			  "coordinates": [ret]
+                      }
+		  }]
+              }
+	  };
+      };
+
+      map.on('load', function() {
+	  map.addSource("polygon", createGeoJSONCircle([-71.087366, 42.361092], 2));
+	  map.addLayer({
+	      "id": "polygon",
+	      "type": "fill",
+	      "source": "polygon",
+	      "layout": {},
+	      "paint": {
+		  "fill-color": "#ccccff",
+		  "fill-opacity": 0.5
+	      }
+	  });
+      });
+    </script>
+  </body>
+</html>

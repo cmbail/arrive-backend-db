@@ -1,0 +1,28 @@
+{
+  "name": "arrive-backend",
+  "version": "0.0.1",
+  "description": "Postgres backend for the arrive mobile app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anders94/arrive-backend.git"
+  },
+  "author": "Anders Brownworth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anders94/arrive-backend/issues"
+  },
+  "homepage": "https://github.com/anders94/arrive-backend#readme",
+  "dependencies": {
+    "apn": "^2.2.0",
+    "db-migrate": "^0.11.9",
+    "db-migrate-pg": "^1.2.1",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "google-libphonenumber": "^3.2.8",
+    "twilio": "^3.43.0"
+  }
+}
